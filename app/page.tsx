@@ -49,6 +49,7 @@ export default function AddBookmarkForm() {
     });
 
     form.reset();
+    fetchBookmarks();
   };
   const deleteBookmark = async (id: string) => {
     const { error } = await supabase.from("bookmarks").delete().eq("id", id);
