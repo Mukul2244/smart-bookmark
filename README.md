@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Challenges Faced & Solutions
 
-## Getting Started
+While building this real-time bookmark application using Next.js and Supabase, I encountered several technical challenges. Below is a summary of the key issues and how I resolved them.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 1️⃣ Google OAuth Redirecting to `localhost` After Deployment
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Problem  
+After deploying to Vercel, Google login redirected to:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+instead of the production URL.
 
-## Learn More
+### 🔍 Root Cause  
+Supabase `Site URL` was still configured as `localhost`.
 
-To learn more about Next.js, take a look at the following resources:
+### ✅ Solution  
+- Updated **Authentication → URL Configuration → Site URL** to the production URL.
+- Added both:
+  - Production URL
+  - `http://localhost:3000`
+  
+  to **Redirect URLs**.
+- Used dynamic redirect in login:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+await supabase.auth.signInWithOAuth({
+  provider: "google",
+  options: {
+    redirectTo: window.location.origin,
+  },
+});
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
