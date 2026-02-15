@@ -43,13 +43,15 @@ export default function AddBookmarkForm() {
 
   const onSubmit = async (values: BookmarkFormValues) => {
     if (!user) return;
-    await supabase.from("bookmarks").insert({
+    const { error } = await supabase.from("bookmarks").insert({
       ...values,
       user_id: user?.id,
     });
+    if (!error) {
+      await fetchBookmarks();
+    }
 
     form.reset();
-    fetchBookmarks();
   };
   const deleteBookmark = async (id: string) => {
     const { error } = await supabase.from("bookmarks").delete().eq("id", id);
